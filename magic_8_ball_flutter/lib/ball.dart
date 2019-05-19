@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'dart:math';
+import 'package:magic_8_ball_flutter/constants.dart';
 
 class Ball extends StatefulWidget {
   @override
@@ -6,8 +8,24 @@ class Ball extends StatefulWidget {
 }
 
 class _BallState extends State<Ball> {
+  int ballNumber = 1;
+
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Container(
+      color: Magic8.blue[200],
+      child: Center(
+        child: FlatButton(
+            child: Image(
+              image: AssetImage('images/ball$ballNumber.png'),
+            ),
+            onPressed: () {
+              setState(() {
+                ballNumber = Random().nextInt(5) + 1;
+                print(ballNumber);
+              });
+            }),
+      ),
+    );
   }
 }

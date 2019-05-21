@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:count_app_bloc/counter_bloc.dart';
 
 void main() => runApp(MyApp());
 
@@ -25,20 +26,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCount() {
-    setState(() {
-      _counter++;
-    });
-  }
-
-  void _decrementCount() {
-    setState(() {
-      _counter--;
-    });
-  }
-
+  CounterBloc _counterBloc = CounterBloc(initialCount: 0);
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(),
@@ -49,9 +37,12 @@ class _MyHomePageState extends State<MyHomePage> {
               Text(
                 'You have pushed the button this many times:',
               ),
-              Text(
-                '$_counter',
-                style: Theme.of(context).textTheme.display1,
+              StreamBuilder(
+                stream: _counterBloc.counterObservable,
+                builder: (context, AsyncSnapshot<int> snapshot) => Text(
+                      '${snapshot.data}',
+                      style: Theme.of(context).textTheme.display1,
+                    ),
               ),
             ],
           ),
@@ -60,7 +51,7 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.end,
           children: <Widget>[
             FloatingActionButton(
-              onPressed: () => _incrementCount(),
+              onPressed: () => _counterBloc.increment(),
               tooltip: 'Increment',
               child: Icon(Icons.add),
             ),
@@ -68,11 +59,17 @@ class _MyHomePageState extends State<MyHomePage> {
               height: 10,
             ),
             FloatingActionButton(
-              onPressed: () => _decrementCount(),
+              onPressed: () => _counterBloc.decrement(),
               tooltip: 'Decrement',
               child: Icon(Icons.remove),
             ),
           ],
         ),
       );
+
+  @override
+  void dispose() {
+    _counterBloc.dispose();
+    super.dispose();
+  }
 }
